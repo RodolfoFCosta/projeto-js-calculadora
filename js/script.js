@@ -1,47 +1,45 @@
-   
-   function relogio()  {
-    function criaHoraDosSegundos(segundos) {
-        const data = new Date(segundos * 1000);
-        return data.toLocaleTimeString('pt-BR',{
-            hour12: false,
-            timeZone:  'UTC'
-        });
-   }
-    
-    const relogio = document.querySelector('.relogio');
-   
-    let segundos = 0;
-    let timer;
+//Selecionar Elementos
+const previousOperationText = document.querySelector("#previous-operation")
+const currentOperationText = document.querySelector("#current-operation")
+const buttons = document.querySelectorAll("#buttons-container button")
 
-   function iniciaRelogio() {
-        timer = setInterval(function(){
-            segundos++;
-            relogio.innerHTML = criaHoraDosSegundos(segundos);
-       }, 1000);
-   }
+//classes
+class Calculator {
+    constructor(previousOperationText, currentOperationText) {
+        this.previousOperationText = previousOperationText
+        this.currentOperationText = currentOperationText
+        this.currentOperation = ""
+    }
 
+    //add digit to calculator screen
+    addDigit(digit) {
 
-   document.addEventListener ('click', function(e) {
-        const el = e.target;
+        this.currentOperation = digit
+        this.updateSren()
+    }
 
-        if (el.classList.contains('zerar')) {
-            clearInterval(timer);
-            relogio.innerHTML = '00:00:00';
-            segundos = 0;
-            relogio.classList.remove('pausado');
+    // chance values of the claculator screen
+    updateSren() {
+        this.currentOperationText.innerText += this.currentOperation;
+    }
+}
+
+const calc = new Calculator(previousOperationText, currentOperationText);
+
+//Eventos
+buttons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+        const value = e.target.innerText;
+
+        if (+value >= 0 || value === ".") {
+
+            calc.addDigit(value);
+
+        } else {
+
+            console.log('op' + value)
+
         }
+    });
+});
 
-        if (el.classList.contains('iniciar')) {
-
-            relogio.classList.remove('pausado');
-            clearInterval(timer);
-            iniciaRelogio();
-        }
-
-        if (el.classList.contains('pausar')) {
-            clearInterval(timer);
-            relogio.classList.add('pausado');
-        }
-   });
-   }
-   relogio() ;
